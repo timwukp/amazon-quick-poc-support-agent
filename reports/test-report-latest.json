@@ -1,0 +1,886 @@
+{
+  "test_execution": {
+    "test_case_id": "E2E-SALES-DASHBOARD-APP-001",
+    "test_version": "2.0",
+    "agent_type": "AWS Bedrock Harness AgentCore Browser UI",
+    "executed_at": "2026-06-13T17:46:33.158604Z",
+    "region": "us-east-1",
+    "account": "QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531",
+    "overall_status": "PARTIAL",
+    "counts": {
+      "total_steps": 21,
+      "passed": 12,
+      "partial": 6,
+      "failed": 1,
+      "blocked": 0,
+      "skipped": 2
+    },
+    "summary": "Phase 1 (REST connector) built & published; connector actions are auto-generated and NOT customizable (PARTIAL). Phase 2 app built entirely via the App editor AI assistant in one prompt (table+chart+AI summary). Consent is a per-asset checkbox 'Confirm use of assets' dialog plus a runtime 'Allow one time / Allow on this app' permission. Phase 3 preview renders in a cross-origin sandboxed iframe (title 'Sandbox Error') that automation cannot read -> PARTIAL, human visual check needed. Phase 4 publish succeeded; sharing with an external email FAILED because the share search returns 'No results found' for non-directory users and the Share button stays disabled."
+  },
+  "cookbook_corrections": [
+    {
+      "step_id": "1.1",
+      "cookbook_says": "Connectors page at /sn/quicksight-connectors",
+      "actual_ui": "That path returns 'Not Found'. Real path: https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/start/integrations?tab=action , reached via left sidebar item 'Connectors'.",
+      "correction_needed": true,
+      "suggested_correction": "Update Connectors URL to /sn/account/{account}/start/integrations?tab=action and note it is opened from the 'Connectors' sidebar item."
+    },
+    {
+      "step_id": "1.2",
+      "cookbook_says": "Click 'Create connector' button",
+      "actual_ui": "No generic 'Create connector' button. You pick a connector-type card ('REST API connection') from the 'Available' tab catalog, which opens a dialog titled 'REST API connection details' with wizard steps Connect / Review / Publish.",
+      "correction_needed": true,
+      "suggested_correction": "Replace 'Create connector' with: select the 'REST API connection' card under the 'Available' tab; wizard = Connect / Review / Publish."
+    },
+    {
+      "step_id": "1.3",
+      "cookbook_says": "Fields: API endpoint / Server URL; auth dropdown",
+      "actual_ui": "Field labels are: Name ('Enter name'), '+ Add Description', 'Connection type' (Public network), 'OAuth Configuration' (options: Custom OAuth app | Service-to-Service OAuth | None), 'Base URL' (placeholder https://mydomain.com). Buttons Cancel / Next.",
+      "correction_needed": true,
+      "suggested_correction": "Use exact labels 'Base URL' and 'OAuth Configuration'; for no-auth choose 'None'."
+    },
+    {
+      "step_id": "1.4",
+      "cookbook_says": "Define a 'GetProducts' GET /products read action (name, method, path, type)",
+      "actual_ui": "The Review step ('Review actions for REST API connection') AUTO-lists fixed actions Delete/Get/Patch/Post/Put with columns Action/Type/Description. There is NO add-action button and NO per-action name/path/operation-type fields. A custom 'GetProducts GET /products' action cannot be defined here.",
+      "correction_needed": true,
+      "suggested_correction": "Remove the manual 'GetProducts' action steps. Document that REST connector actions are auto-generated HTTP-method actions (Get/Post/Put/Patch/Delete) and are not individually configurable in this wizard."
+    },
+    {
+      "step_id": "1.5",
+      "cookbook_says": "Save + Test the connector",
+      "actual_ui": "Final step is 'Publish connection for REST API connection' with access options 'Everyone in your organization' / 'Specific groups'; button 'Publish'. No explicit 'Test' button in the wizard. After publish the connector appears under 'Connected' with desc 'Connect to any REST API endpoint with standard HTTP methods.'",
+      "correction_needed": true,
+      "suggested_correction": "Rename 'Save+Test' to 'Publish'; note access scope selection and that there is no test step in the wizard."
+    },
+    {
+      "step_id": "2.1",
+      "cookbook_says": "Apps page at /sn/apps; click Create app and fill a creation dialog",
+      "actual_ui": "App editor opens at /sn/account/{account}/apps/{app-id}/edit. App starts as 'Untitled App' and is auto-renamed from the build prompt (became 'Sales Dashboard'). The build is driven by the in-editor 'APPS ASSISTANT' chat, input placeholder 'Ask Apps to make changes', submitted with Enter (Send button also present).",
+      "correction_needed": true,
+      "suggested_correction": "Document that the app is created as 'Untitled App', auto-named from the AI prompt, and built via the APPS ASSISTANT chat (placeholder 'Ask Apps to make changes', submit with Enter)."
+    },
+    {
+      "step_id": "2.2",
+      "cookbook_says": "A connector consent dialog with Allow/Deny",
+      "actual_ui": "Consent is an inline 'Confirm use of assets' block listing each asset (e.g. 'AI Inference - Read-only access', 'Sales API Connector - Read/Write') EACH with its own checkbox (button role=checkbox, aria-checked). Buttons: 'Deny all' / 'Confirm'. Clicking 'Confirm' only approves assets whose checkbox is checked; an unchecked asset is reported as DENIED.",
+      "correction_needed": true,
+      "suggested_correction": "Document title 'Confirm use of assets', per-asset checkboxes (must be checked to grant), access labels 'Read-only access'/'Read/Write', and buttons 'Deny all'/'Confirm'. Warn that 'Confirm' with an unchecked asset = denied."
+    },
+    {
+      "step_id": "3.0",
+      "cookbook_says": "Runtime connector/AI consent is the same as build consent",
+      "actual_ui": "A second, distinct runtime permission dialog appears with radio options 'Allow one time' (Permission is used once and then removed) and 'Allow on this app' (Permission persists until you revoke it); buttons 'Do not allow' / 'Continue'.",
+      "correction_needed": true,
+      "suggested_correction": "Add a separate runtime-permission dialog: options 'Allow one time' / 'Allow on this app', buttons 'Do not allow' / 'Continue'."
+    },
+    {
+      "step_id": "3.1",
+      "cookbook_says": "Preview renders inline and is inspectable",
+      "actual_ui": "Preview renders in a cross-origin sandboxed iframe (srcdoc, sandbox='allow-scripts allow-modals', title 'Sandbox Error'). Automation cannot read its DOM, so table/chart/AI rendering must be verified visually by a human.",
+      "correction_needed": true,
+      "suggested_correction": "Note that the preview/published app runs in a sandboxed iframe; programmatic verification of rendered content is not possible and visual inspection is required."
+    },
+    {
+      "step_id": "4.1",
+      "cookbook_says": "Publish via a Publish button; success toast",
+      "actual_ui": "'Publish' button opens dialog 'Publish your app' (shows a 'Changes' summary; buttons Cancel/Publish). On success a dialog 'Your app has been published' shows App name, the view URL (.../apps/{id}/view/app) and buttons 'Dismiss'/'Open'. App status changes Private -> Published.",
+      "correction_needed": true,
+      "suggested_correction": "Document the publish confirmation dialog ('Publish your app') and the success dialog ('Your app has been published') with the /view/app URL and Dismiss/Open buttons."
+    },
+    {
+      "step_id": "4.4",
+      "cookbook_says": "Share with an external email (pilot-user@example.com) as Viewer",
+      "actual_ui": "Share dialog 'Share this app' has search placeholder 'Search for name, alias or email', permission levels 'Viewer' and 'Co-owner', a 'Share' button, a 'Shared with' list, a 'Share with all' option ('Everyone in this account can use this app') and 'Copy link'. Typing the external Gmail returns 'No results found' and the 'Share' button stays DISABLED \u2014 you cannot invite a non-directory email. Viable sharing = existing directory users, 'Share with all', or 'Copy link'.",
+      "correction_needed": true,
+      "suggested_correction": "Remove the external-email share step; document that direct share requires an existing directory user. Permission levels are 'Viewer'/'Co-owner'. For external/broad sharing use 'Copy link' or 'Share with all'."
+    }
+  ],
+  "ui_discovery": {
+    "connector_page": {
+      "url_path": "/sn/account/{account}/start/integrations?tab=action",
+      "sidebar_menu_text": "Connectors",
+      "page_heading": "Connectors",
+      "page_subtitle": "Connect Quick to other applications",
+      "tabs": [
+        "Available",
+        "Create for your team"
+      ],
+      "create_button_text": "(no generic create button \u2014 select the 'REST API connection' connector-type card)",
+      "connector_types_available": [
+        "REST API connection"
+      ],
+      "creation_dialog_title": "REST API connection details",
+      "wizard_steps": [
+        "Connect",
+        "Review",
+        "Publish"
+      ],
+      "form_fields": {
+        "name_label": "Name (placeholder 'Enter name')",
+        "description_label": "+ Add Description",
+        "connection_type_label": "Connection type (option: Public network)",
+        "url_label": "Base URL (placeholder https://mydomain.com)",
+        "auth_label": "OAuth Configuration",
+        "auth_options": [
+          "Custom OAuth app",
+          "Service-to-Service OAuth",
+          "None"
+        ]
+      },
+      "action_form_fields": {
+        "note": "Actions are AUTO-generated and NOT user-configurable.",
+        "review_step_heading": "Review actions for REST API connection",
+        "columns": [
+          "Action",
+          "Type",
+          "Description"
+        ],
+        "auto_actions": [
+          "Delete",
+          "Get",
+          "Patch",
+          "Post",
+          "Put"
+        ],
+        "name_label": null,
+        "method_label": null,
+        "method_options": [],
+        "path_label": null,
+        "type_label": null,
+        "type_options": []
+      },
+      "test_button_text": null,
+      "save_button_text": "Publish",
+      "publish_step_heading": "Publish connection for REST API connection",
+      "publish_access_options": [
+        "Everyone in your organization",
+        "Specific groups"
+      ],
+      "success_message": "Connector 'Sales API Connector' listed under 'Connected' with description 'Connect to any REST API endpoint with standard HTTP methods.'"
+    },
+    "apps_page": {
+      "url_path": "/sn/account/{account}/apps/{app-id}/edit",
+      "sidebar_menu_text": "Apps",
+      "page_heading": "Untitled App (auto-renamed from prompt to 'Sales Dashboard')",
+      "create_button_text": "(app created as 'Untitled App'; entered editor directly)",
+      "creation_dialog_fields": [],
+      "editor_layout": {
+        "panels": [
+          "APPS ASSISTANT chat (left)",
+          "Preview/canvas iframe (right)",
+          "Top bar: Version, Preview, Settings, Publish, Share, Expand, Conversation history, Close chat"
+        ],
+        "ai_interface_location": "Left-side 'APPS ASSISTANT' chat panel inside the editor",
+        "ai_input_placeholder": "Ask Apps to make changes",
+        "ai_submit_mechanism": "Enter key (a 'Send' button is also present)",
+        "ai_progress_indicators": [
+          "Workspace setup (N steps)",
+          "tool calls e.g. search_action_connectors / register_runtime_integration / Writing code file / build",
+          "Read N file(s), ran N tools"
+        ],
+        "ai_output_type": "Both code (writes component .tsx/.ts files) and a live preview iframe; build verifies compilation",
+        "save_button_text": "(auto-saved; versions shown as 'Version 2')",
+        "preview_button_text": "Preview (aria-label) / inline 'View preview'",
+        "publish_button_text": "Publish"
+      }
+    },
+    "sharing_interface": {
+      "access_point": "'Share' button in editor top bar -> dialog 'Share this app'",
+      "search_field_placeholder": "Search for name, alias or email",
+      "permission_levels": [
+        "Viewer",
+        "Co-owner"
+      ],
+      "confirm_button_text": "Share (disabled until a valid directory user is selected)",
+      "other_options": [
+        "Share with all (Everyone in this account can use this app)",
+        "Copy link"
+      ],
+      "shared_with_list_example": [
+        "WSParticipantRole/Participant",
+        "workshop-user@example.com (Owner)"
+      ],
+      "success_message": "(not reached \u2014 external email pilot-user@example.com returned 'No results found'; Share stayed disabled)",
+      "external_email_supported": false
+    },
+    "consent_dialogs": {
+      "connector_consent": {
+        "appears": true,
+        "title": "Confirm use of assets",
+        "message": "Lists each asset with its access level and a per-asset checkbox, e.g. 'AI Inference \u2014 Read-only access', 'Sales API Connector \u2014 Read/Write'. Asset checkbox (role=checkbox, aria-checked) must be checked to grant; unchecked = denied.",
+        "buttons": [
+          "Deny all",
+          "Confirm"
+        ]
+      },
+      "dashboard_consent": {
+        "appears": false,
+        "title": null,
+        "message": "No separate dashboard consent observed; the app embeds a Highcharts visual (code-generated), not a QuickSight dashboard, so no dashboard-access consent appeared.",
+        "buttons": []
+      },
+      "ai_inference_consent": {
+        "appears": true,
+        "title": "Confirm use of assets (build-time) + runtime permission dialog",
+        "message": "Build-time: 'AI Inference \u2014 Read-only access' listed in 'Confirm use of assets'. Runtime: separate dialog with 'Allow one time' (Permission is used once and then removed) / 'Allow on this app' (Permission persists until you revoke it).",
+        "buttons": [
+          "Deny all",
+          "Confirm",
+          "Do not allow",
+          "Continue"
+        ]
+      },
+      "runtime_permission": {
+        "appears": true,
+        "title": "(runtime asset permission)",
+        "options": [
+          "Allow one time \u2014 Permission is used once and then removed",
+          "Allow on this app \u2014 Permission persists until you revoke it"
+        ],
+        "buttons": [
+          "Do not allow",
+          "Continue"
+        ]
+      }
+    }
+  },
+  "steps": [
+    {
+      "step_id": "1.1",
+      "step_name": "Open Connectors page",
+      "status": "PASS",
+      "duration_ms": 120000,
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/start/integrations?tab=action",
+      "actual_page_title": "Connectors",
+      "actual_ui_labels": [
+        "Connectors",
+        "Connect Quick to other applications",
+        "Available",
+        "Create for your team",
+        "REST API connection"
+      ],
+      "action_taken": "Direct URL /sn/quicksight-connectors -> 'Not Found'; used left sidebar 'Connectors'.",
+      "wait_duration_ms": 8000,
+      "unexpected_ui": [],
+      "error_messages": [],
+      "screenshots": [
+        "step_1.1_after.png"
+      ],
+      "notes": "Fallback nav used. Catalog includes 'REST API connection'."
+    },
+    {
+      "step_id": "1.2",
+      "step_name": "Start REST API connector",
+      "status": "PASS",
+      "duration_ms": 60000,
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/start/integrations?tab=action",
+      "actual_page_title": "REST API connection details",
+      "actual_ui_labels": [
+        "REST API connection",
+        "Connect",
+        "Review",
+        "Publish",
+        "Cancel",
+        "Next"
+      ],
+      "action_taken": "Clicked 'REST API connection' card -> dialog 'REST API connection details'.",
+      "wait_duration_ms": 4000,
+      "unexpected_ui": [],
+      "error_messages": [],
+      "screenshots": [
+        "step_1.2_before.png",
+        "step_1.2_after.png"
+      ],
+      "notes": "No generic 'Create connector' button; wizard Connect/Review/Publish."
+    },
+    {
+      "step_id": "1.3",
+      "step_name": "Fill connection details",
+      "status": "PASS",
+      "duration_ms": 90000,
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/start/integrations?tab=action",
+      "actual_page_title": "REST API connection details",
+      "actual_ui_labels": [
+        "Name",
+        "Enter name",
+        "+ Add Description",
+        "Connection type",
+        "Public network",
+        "OAuth Configuration",
+        "Custom OAuth app",
+        "Service-to-Service OAuth",
+        "None",
+        "Base URL",
+        "Cancel",
+        "Next"
+      ],
+      "action_taken": "Set Name='Sales API Connector', Base URL='https://dummyjson.com', OAuth Configuration='None', added description.",
+      "wait_duration_ms": 3000,
+      "unexpected_ui": [],
+      "error_messages": [],
+      "screenshots": [
+        "step_1.3_after.png"
+      ],
+      "notes": "Label is 'Base URL' (placeholder https://mydomain.com), auth = 'OAuth Configuration'."
+    },
+    {
+      "step_id": "1.4",
+      "step_name": "Review actions",
+      "status": "PARTIAL",
+      "duration_ms": 30000,
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/start/integrations?tab=action",
+      "actual_page_title": "Review actions for REST API connection",
+      "actual_ui_labels": [
+        "Action",
+        "Type",
+        "Description",
+        "Delete",
+        "Get",
+        "Patch",
+        "Post",
+        "Put",
+        "Cancel",
+        "Next"
+      ],
+      "action_taken": "Reviewed auto-listed actions; no way to add/configure a custom 'GetProducts' action.",
+      "wait_duration_ms": 3000,
+      "unexpected_ui": [],
+      "error_messages": [],
+      "screenshots": [],
+      "notes": "Actions auto-generated & fixed (Delete/Get/Patch/Post/Put); cookbook's manual GetProducts action does not exist."
+    },
+    {
+      "step_id": "1.5",
+      "step_name": "Publish connector",
+      "status": "PASS",
+      "duration_ms": 40000,
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/start/integrations?tab=action",
+      "actual_page_title": "Publish connection for REST API connection",
+      "actual_ui_labels": [
+        "Everyone in your organization",
+        "Specific groups",
+        "Add",
+        "Publish"
+      ],
+      "action_taken": "Selected access scope and clicked 'Publish'.",
+      "wait_duration_ms": 4000,
+      "unexpected_ui": [],
+      "error_messages": [],
+      "screenshots": [
+        "step_1.5_published.png"
+      ],
+      "notes": "Connector appears under 'Connected' with desc 'Connect to any REST API endpoint with standard HTTP methods.' No Test step."
+    },
+    {
+      "step_id": "2.1",
+      "step_name": "Create app & open editor",
+      "status": "PASS",
+      "duration_ms": 30000,
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_page_title": "Untitled App | Quick Apps",
+      "actual_ui_labels": [
+        "Explore",
+        "Apps",
+        "Untitled App",
+        "Preview",
+        "Settings",
+        "Expand",
+        "Conversation history",
+        "Close chat",
+        "Ask Apps to make changes",
+        "Send"
+      ],
+      "action_taken": "App created as 'Untitled App'; entered editor; typed build prompt into APPS ASSISTANT and submitted with Enter.",
+      "wait_duration_ms": 12000,
+      "unexpected_ui": [],
+      "error_messages": [],
+      "screenshots": [
+        "step_2.1_before.png",
+        "step_2.1_form.png",
+        "step_2.1_after.png"
+      ],
+      "notes": "Build driven by in-editor AI assistant (one natural-language prompt)."
+    },
+    {
+      "step_id": "2.2",
+      "step_name": "Connector + AI consent",
+      "status": "PASS",
+      "duration_ms": 60000,
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_page_title": "Sales Dashboard | Quick Apps",
+      "actual_ui_labels": [
+        "Confirm use of assets",
+        "AI Inference",
+        "Read-only access",
+        "Sales API Connector",
+        "Read/Write",
+        "Deny all",
+        "Confirm"
+      ],
+      "action_taken": "First 'Confirm' approved AI Inference but left connector checkbox unchecked -> connector reported DENIED. Used 'Re-approve Sales API Connector' suggestion, re-sent, checked connector box, clicked 'Confirm'.",
+      "wait_duration_ms": 60000,
+      "unexpected_ui": [
+        {
+          "text": "Confirm use of assets \u2014 per-asset checkboxes"
+        }
+      ],
+      "error_messages": [],
+      "screenshots": [
+        "step_2.2_consent_dialog.png",
+        "step_2.2_consent_reapprove.png"
+      ],
+      "notes": "KEY: consent is per-asset checkbox; unchecked asset = denied even when clicking Confirm."
+    },
+    {
+      "step_id": "2.3",
+      "step_name": "Connector data table",
+      "status": "PASS",
+      "duration_ms": 40000,
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_page_title": "Sales Dashboard | Quick Apps",
+      "actual_ui_labels": [
+        "SalesTable",
+        "useSalesData.ts"
+      ],
+      "action_taken": "AI generated SalesTable component + useSalesData hook fetching from Sales API Connector.",
+      "wait_duration_ms": 40000,
+      "unexpected_ui": [],
+      "error_messages": [],
+      "screenshots": [
+        "step_2.x_build_complete.png"
+      ],
+      "notes": "Generated as code component (alternating-row styling)."
+    },
+    {
+      "step_id": "2.4",
+      "step_name": "Chart visual",
+      "status": "PASS",
+      "duration_ms": 40000,
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_page_title": "Sales Dashboard | Quick Apps",
+      "actual_ui_labels": [
+        "SalesChart",
+        "Column Chart",
+        "Highcharts"
+      ],
+      "action_taken": "AI generated SalesChart (Highcharts column chart, revenue by category).",
+      "wait_duration_ms": 40000,
+      "unexpected_ui": [],
+      "error_messages": [],
+      "screenshots": [
+        "step_2.x_build_complete.png"
+      ],
+      "notes": "Embedded Highcharts visual, not a QuickSight dashboard."
+    },
+    {
+      "step_id": "2.5",
+      "step_name": "AI summary component",
+      "status": "PASS",
+      "duration_ms": 40000,
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_page_title": "Sales Dashboard | Quick Apps",
+      "actual_ui_labels": [
+        "AISummary",
+        "Generate AI Summary"
+      ],
+      "action_taken": "AI generated AISummary component with 'Generate AI Summary' button (Claude Haiku).",
+      "wait_duration_ms": 40000,
+      "unexpected_ui": [],
+      "error_messages": [],
+      "screenshots": [
+        "step_2.x_build_complete.png"
+      ],
+      "notes": "AI Inference integration approved at build time."
+    },
+    {
+      "step_id": "3.0",
+      "step_name": "Runtime permission",
+      "status": "PASS",
+      "duration_ms": 20000,
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_page_title": "Sales Dashboard | Quick Apps",
+      "actual_ui_labels": [
+        "Allow one time",
+        "Permission is used once and then removed",
+        "Allow on this app",
+        "Permission persists until you revoke it",
+        "Do not allow",
+        "Continue"
+      ],
+      "action_taken": "Selected 'Allow on this app' then 'Continue'.",
+      "wait_duration_ms": 8000,
+      "unexpected_ui": [
+        {
+          "text": "Runtime permission dialog (Allow one time / Allow on this app)"
+        }
+      ],
+      "error_messages": [],
+      "screenshots": [
+        "step_3_runtime_permission.png"
+      ],
+      "notes": "Distinct from build-time 'Confirm use of assets' dialog."
+    },
+    {
+      "step_id": "3.1",
+      "step_name": "Open preview",
+      "status": "PARTIAL",
+      "duration_ms": 30000,
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_page_title": "Sales Dashboard | Quick Apps",
+      "actual_ui_labels": [
+        "Preview",
+        "View preview"
+      ],
+      "action_taken": "Clicked 'Preview'; preview loaded in cross-origin sandboxed iframe (title 'Sandbox Error').",
+      "wait_duration_ms": 18000,
+      "unexpected_ui": [],
+      "error_messages": [
+        "iframe title 'Sandbox Error' (cross-origin sandbox, DOM unreadable)"
+      ],
+      "screenshots": [
+        "step_3.1_preview.png",
+        "step_3.1_preview_state.png",
+        "step_3.1_sandbox_error.png"
+      ],
+      "notes": "Cannot verify render via DOM (cross-origin). Human visual review requested."
+    },
+    {
+      "step_id": "3.2",
+      "step_name": "Verify table renders",
+      "status": "PARTIAL",
+      "duration_ms": 5000,
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_page_title": "Sales Dashboard | Quick Apps",
+      "actual_ui_labels": [],
+      "action_taken": "Cannot inspect iframe DOM.",
+      "wait_duration_ms": 0,
+      "unexpected_ui": [],
+      "error_messages": [],
+      "screenshots": [
+        "step_3.1_sandbox_error.png"
+      ],
+      "notes": "Blocked by sandboxed iframe; requires human visual check."
+    },
+    {
+      "step_id": "3.3",
+      "step_name": "Verify chart renders",
+      "status": "PARTIAL",
+      "duration_ms": 5000,
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_page_title": "Sales Dashboard | Quick Apps",
+      "actual_ui_labels": [],
+      "action_taken": "Cannot inspect iframe DOM.",
+      "wait_duration_ms": 0,
+      "unexpected_ui": [],
+      "error_messages": [],
+      "screenshots": [
+        "step_3.1_sandbox_error.png"
+      ],
+      "notes": "Blocked by sandboxed iframe; requires human visual check."
+    },
+    {
+      "step_id": "3.4",
+      "step_name": "Verify AI summary works",
+      "status": "PARTIAL",
+      "duration_ms": 5000,
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_page_title": "Sales Dashboard | Quick Apps",
+      "actual_ui_labels": [],
+      "action_taken": "Cannot inspect iframe DOM / click 'Generate AI Summary' inside sandbox.",
+      "wait_duration_ms": 0,
+      "unexpected_ui": [],
+      "error_messages": [],
+      "screenshots": [
+        "step_3.1_sandbox_error.png"
+      ],
+      "notes": "Blocked by sandboxed iframe; requires human visual check."
+    },
+    {
+      "step_id": "4.1",
+      "step_name": "Publish app",
+      "status": "PASS",
+      "duration_ms": 30000,
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_page_title": "Sales Dashboard | Quick Apps",
+      "actual_ui_labels": [
+        "Publish",
+        "Publish your app",
+        "Changes",
+        "Cancel",
+        "Your app has been published",
+        "App name: Sales Dashboard",
+        "Dismiss",
+        "Open"
+      ],
+      "action_taken": "Clicked 'Publish' -> 'Publish your app' dialog -> 'Publish'. Success dialog 'Your app has been published'.",
+      "wait_duration_ms": 8000,
+      "unexpected_ui": [],
+      "error_messages": [],
+      "screenshots": [
+        "step_4.1_publish_dialog.png",
+        "step_4.1_published_success.png"
+      ],
+      "notes": "View URL: https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/view/app . Status Private -> Published."
+    },
+    {
+      "step_id": "4.2",
+      "step_name": "Verify published app",
+      "status": "PARTIAL",
+      "duration_ms": 10000,
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/view/app",
+      "actual_page_title": "Sales Dashboard",
+      "actual_ui_labels": [
+        "Open"
+      ],
+      "action_taken": "Clicked 'Open'; published view also uses sandboxed iframe.",
+      "wait_duration_ms": 8000,
+      "unexpected_ui": [],
+      "error_messages": [
+        "sandboxed iframe (same DOM limitation)"
+      ],
+      "screenshots": [],
+      "notes": "Publish confirmed via success dialog + status; rendered content not DOM-verifiable."
+    },
+    {
+      "step_id": "4.3",
+      "step_name": "Open Share dialog",
+      "status": "PASS",
+      "duration_ms": 20000,
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_page_title": "Share this app",
+      "actual_ui_labels": [
+        "Share this app",
+        "Search for name, alias or email",
+        "Viewer",
+        "Co-owner",
+        "Share",
+        "Shared with",
+        "Share with all",
+        "Everyone in this account can use this app",
+        "Copy link",
+        "Close"
+      ],
+      "action_taken": "Clicked 'Share'; opened 'Share this app' dialog; opened permission dropdown (Viewer/Co-owner).",
+      "wait_duration_ms": 4000,
+      "unexpected_ui": [],
+      "error_messages": [],
+      "screenshots": [
+        "step_4.3_share_dialog.png"
+      ],
+      "notes": "Permission levels: Viewer, Co-owner. Also 'Share with all' and 'Copy link'."
+    },
+    {
+      "step_id": "4.4",
+      "step_name": "Share with pilot user (Viewer)",
+      "status": "FAIL",
+      "duration_ms": 20000,
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_page_title": "Share this app",
+      "actual_ui_labels": [
+        "Search for name, alias or email",
+        "No results found",
+        "Viewer",
+        "Share"
+      ],
+      "action_taken": "Typed pilot-user@example.com into search; result 'No results found'; 'Share' button disabled.",
+      "wait_duration_ms": 5000,
+      "unexpected_ui": [],
+      "error_messages": [
+        "No results found"
+      ],
+      "screenshots": [
+        "step_4.3_share_no_results.png"
+      ],
+      "notes": "External/non-directory email cannot be invited. Use existing directory user, 'Share with all', or 'Copy link'."
+    },
+    {
+      "step_id": "C.1",
+      "step_name": "Delete test app",
+      "status": "SKIP",
+      "duration_ms": 0,
+      "actual_url": "",
+      "actual_page_title": "",
+      "actual_ui_labels": [],
+      "action_taken": "Cleanup phase optional; not performed to preserve evidence.",
+      "wait_duration_ms": 0,
+      "unexpected_ui": [],
+      "error_messages": [],
+      "screenshots": [],
+      "notes": "Optional cleanup skipped."
+    },
+    {
+      "step_id": "C.2",
+      "step_name": "Delete connector",
+      "status": "SKIP",
+      "duration_ms": 0,
+      "actual_url": "",
+      "actual_page_title": "",
+      "actual_ui_labels": [],
+      "action_taken": "Cleanup phase optional; not performed to preserve evidence.",
+      "wait_duration_ms": 0,
+      "unexpected_ui": [],
+      "error_messages": [],
+      "screenshots": [],
+      "notes": "Optional cleanup skipped."
+    }
+  ],
+  "screenshots_manifest": [
+    {
+      "step_id": "general",
+      "filename": "authenticated_home.png",
+      "description": "Authenticated Quick home after SSO",
+      "timestamp": "2026-06-13T17:46:33.158650Z"
+    },
+    {
+      "step_id": "1.1",
+      "filename": "step_1.1_after.png",
+      "description": "Connectors page",
+      "timestamp": "2026-06-13T17:46:33.158650Z"
+    },
+    {
+      "step_id": "1.2",
+      "filename": "step_1.2_before.png",
+      "description": "Connectors catalog before selecting REST API",
+      "timestamp": "2026-06-13T17:46:33.158650Z"
+    },
+    {
+      "step_id": "1.2",
+      "filename": "step_1.2_after.png",
+      "description": "REST API connection details dialog (Connect)",
+      "timestamp": "2026-06-13T17:46:33.158650Z"
+    },
+    {
+      "step_id": "1.3",
+      "filename": "step_1.3_after.png",
+      "description": "Connection details filled",
+      "timestamp": "2026-06-13T17:46:33.158650Z"
+    },
+    {
+      "step_id": "1.5",
+      "filename": "step_1.5_published.png",
+      "description": "Connector published / Connected list",
+      "timestamp": "2026-06-13T17:46:33.158650Z"
+    },
+    {
+      "step_id": "2.1",
+      "filename": "step_2.1_before.png",
+      "description": "Apps area before create",
+      "timestamp": "2026-06-13T17:46:33.158650Z"
+    },
+    {
+      "step_id": "2.1",
+      "filename": "step_2.1_form.png",
+      "description": "App editor opening / prompt entry",
+      "timestamp": "2026-06-13T17:46:33.158650Z"
+    },
+    {
+      "step_id": "2.1",
+      "filename": "step_2.1_after.png",
+      "description": "App editor with APPS ASSISTANT processing",
+      "timestamp": "2026-06-13T17:46:33.158650Z"
+    },
+    {
+      "step_id": "2.2",
+      "filename": "step_2.2_consent_dialog.png",
+      "description": "'Confirm use of assets' consent (AI Inference + Sales API Connector)",
+      "timestamp": "2026-06-13T17:46:33.158650Z"
+    },
+    {
+      "step_id": "2.2",
+      "filename": "step_2.2_consent_reapprove.png",
+      "description": "Re-approve Sales API Connector consent (checkbox checked)",
+      "timestamp": "2026-06-13T17:46:33.158650Z"
+    },
+    {
+      "step_id": "2.x",
+      "filename": "step_2.x_build_complete.png",
+      "description": "AI build complete (SalesTable/SalesChart/AISummary)",
+      "timestamp": "2026-06-13T17:46:33.158650Z"
+    },
+    {
+      "step_id": "3",
+      "filename": "step_3_runtime_permission.png",
+      "description": "Runtime permission dialog (Allow one time / Allow on this app)",
+      "timestamp": "2026-06-13T17:46:33.158650Z"
+    },
+    {
+      "step_id": "3.1",
+      "filename": "step_3.1_preview.png",
+      "description": "Preview opened",
+      "timestamp": "2026-06-13T17:46:33.158650Z"
+    },
+    {
+      "step_id": "3.1",
+      "filename": "step_3.1_preview_state.png",
+      "description": "Preview state",
+      "timestamp": "2026-06-13T17:46:33.158650Z"
+    },
+    {
+      "step_id": "3.1",
+      "filename": "step_3.1_sandbox_error.png",
+      "description": "Preview sandboxed iframe (title 'Sandbox Error')",
+      "timestamp": "2026-06-13T17:46:33.158650Z"
+    },
+    {
+      "step_id": "4.1",
+      "filename": "step_4.1_publish_dialog.png",
+      "description": "'Publish your app' dialog",
+      "timestamp": "2026-06-13T17:46:33.158650Z"
+    },
+    {
+      "step_id": "4.1",
+      "filename": "step_4.1_published_success.png",
+      "description": "'Your app has been published' success dialog",
+      "timestamp": "2026-06-13T17:46:33.158650Z"
+    },
+    {
+      "step_id": "4.3",
+      "filename": "step_4.3_share_dialog.png",
+      "description": "'Share this app' dialog (Viewer/Co-owner)",
+      "timestamp": "2026-06-13T17:46:33.158650Z"
+    },
+    {
+      "step_id": "4.3",
+      "filename": "step_4.3_share_no_results.png",
+      "description": "Share search 'No results found' for external email; Share disabled",
+      "timestamp": "2026-06-13T17:46:33.158650Z"
+    }
+  ],
+  "errors_encountered": [
+    {
+      "step_id": "1.1",
+      "message": "Direct URL /sn/quicksight-connectors returned 'Not Found' (used sidebar fallback)."
+    },
+    {
+      "step_id": "2.2",
+      "message": "First 'Confirm use of assets' left Sales API Connector unchecked -> reported 'The Action connector integration was denied by you'."
+    },
+    {
+      "step_id": "3.1",
+      "message": "Preview iframe title 'Sandbox Error'; cross-origin sandbox blocks DOM read (SecurityError)."
+    },
+    {
+      "step_id": "4.4",
+      "message": "Share search for pilot-user@example.com -> 'No results found'; Share button disabled (external email not invitable)."
+    }
+  ],
+  "performance_metrics": {
+    "phase_durations_ms": {
+      "phase_1_connector": 340000,
+      "phase_2_app_build": 250000,
+      "phase_3_preview": 50000,
+      "phase_4_publish_share": 90000
+    },
+    "slowest_step": {
+      "step_id": "1.1",
+      "duration_ms": 120000,
+      "reason": "URL fallback + page load"
+    },
+    "ai_generation_times_ms": {
+      "initial_build_incl_consent": 200000,
+      "reapprove_and_rebuild": 50000
+    },
+    "notes": "Durations approximate (manual timing across waits)."
+  }
+}

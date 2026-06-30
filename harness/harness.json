@@ -1,0 +1,193 @@
+{
+  "_comment": "Harness config for the Amazon Quick POC UI test agent. Shapes verified against boto3 1.43.29 (see agentcore-harness-builder skill). Validate with that skill's validate_config.py before deploy. Replace <OWNER> in skills.git.url and fill memory.arn/strategyId via wire_memory.py. The quick-poc-testing skill MUST live on the repo DEFAULT branch (git source has no branch field).",
+  "harnessName": "AmazonQuickPocAgent",
+  "model": {
+    "bedrockModelConfig": {
+      "modelId": "global.anthropic.claude-opus-4-8",
+      "apiFormat": "converse_stream",
+      "maxTokens": 65536
+    }
+  },
+  "systemPrompt": [
+    {
+      "text": "You are a meticulous QA engineer running an Amazon Quick / QuickSight POC test plan through a real browser. Amazon Quick has NO public API for these features, so you must perform every step in the web UI like a human. Your PRIMARY goal is UI DISCOVERY, not just pass/fail: capture the EXACT button labels, menu names, field labels, page URLs, dialog text, and timings so a human can correct their POC Cookbook against real Console behavior.\n\nMethod (consult the 'quick-poc-testing' skill for full rules):\n1. Read the provided test plan (markdown). Work Phase by Phase, Step by Step.\n2. DISCOVER, DON'T ASSUME: the expected labels in the plan are guesses. Use browser_snapshot to read the real labels, act by intent, and record the actual text verbatim.\n3. Screenshot before and after every action; capture an error screenshot on any error. Save under /mnt/reports/screenshots/.\n4. Record per-step: status, actual_url, actual_page_title, actual_ui_labels, action_taken, wait_duration_ms, unexpected_ui, error_messages, screenshots, notes.\n5. Capture exact text of buttons, menu items, form fields, tabs, toasts, errors, breadcrumbs, and sidebar items.\n6. Note any consent/permission dialogs (connector/dashboard/AI) with full title, message, and buttons.\n7. Follow the fallback paths in each step if a direct URL fails; record the actual nav used.\n8. Classify PASS/FAIL/PARTIAL/SKIP/BLOCKED. Never abort the whole run on one failure \u2014 mark and continue; dependent steps become BLOCKED.\n\nSafety: stay within the Quick/QuickSight console domain. NEVER enter login credentials yourself \u2014 if you land on a login/SSO page, call request_human_login and wait. NEVER submit real PII or payment data; use only the placeholder values provided. Only perform destructive actions (delete) in the explicit Cleanup phase.\n\nOutput: assemble ONE JSON report matching schema/report.schema.json (cookbook_corrections + ui_discovery are the key payload), validate it with the code interpreter, write it to /mnt/reports/test-report-latest.json plus a readable /mnt/reports/summary.md, then call notify_complete. If results are visually ambiguous, call request_human_review."
+    }
+  ],
+  "tools": [
+    {
+      "type": "agentcore_browser",
+      "name": "browser",
+      "config": {
+        "agentCoreBrowser": {
+          "browserArn": "arn:aws:bedrock-agentcore:us-east-1:aws:browser/aws.browser.v1"
+        }
+      }
+    },
+    {
+      "type": "agentcore_code_interpreter",
+      "name": "code_interpreter",
+      "config": {
+        "agentCoreCodeInterpreter": {
+          "codeInterpreterArn": "arn:aws:bedrock-agentcore:us-east-1:aws:code-interpreter/aws.codeinterpreter.v1"
+        }
+      }
+    },
+    {
+      "type": "inline_function",
+      "name": "request_human_login",
+      "config": {
+        "inlineFunction": {
+          "description": "Hand control to a human to complete AWS Console / IAM Identity Center SSO + MFA login when the browser lands on a login page. Never enter credentials yourself.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "current_url": {
+                "type": "string",
+                "description": "The login/SSO URL currently shown"
+              },
+              "reason": {
+                "type": "string",
+                "description": "Why login is needed (e.g. session expired)"
+              }
+            },
+            "required": [
+              "current_url",
+              "reason"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "inline_function",
+      "name": "request_human_review",
+      "config": {
+        "inlineFunction": {
+          "description": "Escalate to a human when a UI result needs visual judgment you cannot confidently make (e.g. is this a rendered visual or a placeholder?).",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "step_id": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "screenshot_filename": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "step_id",
+              "reason"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "inline_function",
+      "name": "notify_complete",
+      "config": {
+        "inlineFunction": {
+          "description": "Signal that the test run is complete after the JSON report is written.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "report_path": {
+                "type": "string"
+              },
+              "overall_status": {
+                "type": "string",
+                "enum": [
+                  "PASS",
+                  "FAIL",
+                  "PARTIAL"
+                ]
+              },
+              "passed_steps": {
+                "type": "integer"
+              },
+              "failed_steps": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "report_path",
+              "overall_status"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "allowedTools": [
+    "*"
+  ],
+  "skills": [
+    {
+      "s3": {
+        "uri": "s3://quick-poc-agent-skills-<ACCOUNT_ID>/quick-poc-testing"
+      }
+    }
+  ],
+  "memory": {
+    "_comment": "Wire via agentcore-harness-builder/scripts/wire_memory.py. semantic = learned Quick UI labels/paths across runs; episodic = past test sessions; user_preference = cookbook conventions; summary = run recaps. Fill arn + strategyId from CreateMemory.",
+    "agentCoreMemoryConfiguration": {
+      "arn": "<MEMORY_ARN>",
+      "actorId": "poc-quicksight",
+      "messagesCount": 20,
+      "retrievalConfig": {
+        "/episodes/{actorId}/{sessionId}": {
+          "strategyId": "<EPISODIC_ID>",
+          "topK": 10,
+          "relevanceScore": 0.2
+        },
+        "/users/{actorId}/preferences": {
+          "strategyId": "<USERPREF_ID>",
+          "topK": 10,
+          "relevanceScore": 0.2
+        },
+        "/summaries/{actorId}/{sessionId}": {
+          "strategyId": "<SUMMARIZATION_ID>",
+          "topK": 10,
+          "relevanceScore": 0.2
+        },
+        "/uimap/{actorId}/facts": {
+          "strategyId": "<SEMANTIC_ID>",
+          "topK": 10,
+          "relevanceScore": 0.2
+        }
+      }
+    }
+  },
+  "maxIterations": 200,
+  "maxTokens": 65536,
+  "timeoutSeconds": 3600,
+  "truncation": {
+    "strategy": "sliding_window",
+    "config": {
+      "slidingWindow": {
+        "messagesCount": 200
+      }
+    }
+  },
+  "environment": {
+    "agentCoreRuntimeEnvironment": {
+      "networkConfiguration": {
+        "networkMode": "PUBLIC"
+      },
+      "lifecycleConfiguration": {
+        "idleRuntimeSessionTimeout": 1800,
+        "maxLifetime": 28800
+      }
+    }
+  },
+  "_authorizer_note": "Default IAM (SigV4) inbound auth \u2014 authorizerConfiguration omitted.",
+  "tags": {
+    "team": "quick-poc",
+    "environment": "poc",
+    "cost-center": "engineering",
+    "agent-type": "quicksight-ui-test"
+  }
+}

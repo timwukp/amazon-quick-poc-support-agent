@@ -1,0 +1,25 @@
+# --- run artifacts / transient state ---
+*.log
+harness/.run_state.json
+
+# --- Python ---
+**/__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# --- virtualenvs ---
+.venv/
+venv/
+env/
+
+# --- large local AWS docs (not part of the repo) ---
+*.pdf
+*.txt
+*.rtf
+
+# --- OS / editor cruft ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

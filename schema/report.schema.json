@@ -1,0 +1,98 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Quick POC UI Agent — E2E Test Report",
+  "type": "object",
+  "required": ["test_execution", "cookbook_corrections", "ui_discovery", "steps", "screenshots_manifest"],
+  "properties": {
+    "test_execution": {
+      "type": "object",
+      "required": ["test_case_id", "test_version", "execution_timestamp", "agent_type", "region",
+                   "account_id", "overall_status", "total_steps", "passed_steps", "failed_steps", "skipped_steps"],
+      "properties": {
+        "test_case_id": {"type": "string"},
+        "test_version": {"type": "string"},
+        "execution_timestamp": {"type": "string", "description": "ISO 8601"},
+        "agent_type": {"type": "string"},
+        "region": {"type": "string"},
+        "account_id": {"type": "string"},
+        "overall_status": {"enum": ["PASS", "FAIL", "PARTIAL"]},
+        "total_duration_seconds": {"type": "number"},
+        "total_steps": {"type": "integer"},
+        "passed_steps": {"type": "integer"},
+        "failed_steps": {"type": "integer"},
+        "skipped_steps": {"type": "integer"}
+      }
+    },
+    "cookbook_corrections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["step_id", "cookbook_says", "actual_ui", "correction_needed"],
+        "properties": {
+          "step_id": {"type": "string"},
+          "cookbook_says": {"type": "string"},
+          "actual_ui": {"type": "string"},
+          "correction_needed": {"type": "boolean"},
+          "suggested_correction": {"type": "string"}
+        }
+      }
+    },
+    "ui_discovery": {
+      "type": "object",
+      "description": "Complete map of the real Console UI. Fill every known label; use null/\"\" when not observed.",
+      "properties": {
+        "connector_page": {"type": "object"},
+        "apps_page": {"type": "object"},
+        "sharing_interface": {"type": "object"},
+        "consent_dialogs": {"type": "object"}
+      }
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["step_id", "step_name", "status"],
+        "properties": {
+          "step_id": {"type": "string"},
+          "step_name": {"type": "string"},
+          "status": {"enum": ["PASS", "FAIL", "SKIP", "BLOCKED", "PARTIAL"]},
+          "duration_ms": {"type": "integer"},
+          "actual_url": {"type": "string"},
+          "actual_page_title": {"type": "string"},
+          "actual_ui_labels": {"type": "array", "items": {"type": "string"}},
+          "action_taken": {"type": "string"},
+          "wait_duration_ms": {"type": "integer"},
+          "unexpected_ui": {"type": "array", "items": {"type": "string"}},
+          "error_messages": {"type": "array", "items": {"type": "string"}},
+          "screenshots": {"type": "array", "items": {"type": "string"}},
+          "notes": {"type": "string"}
+        }
+      }
+    },
+    "screenshots_manifest": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["filename", "step_id"],
+        "properties": {
+          "filename": {"type": "string"},
+          "step_id": {"type": "string"},
+          "description": {"type": "string"},
+          "timestamp": {"type": "string"}
+        }
+      }
+    },
+    "errors_encountered": {"type": "array", "items": {"type": "object"}},
+    "performance_metrics": {
+      "type": "object",
+      "properties": {
+        "phase_1_duration_seconds": {"type": "number"},
+        "phase_2_duration_seconds": {"type": "number"},
+        "phase_3_duration_seconds": {"type": "number"},
+        "phase_4_duration_seconds": {"type": "number"},
+        "slowest_step": {"type": "object"},
+        "ai_generation_times_ms": {"type": "array", "items": {"type": "number"}}
+      }
+    }
+  }
+}
