@@ -47,43 +47,43 @@ full structured report (`cookbook_corrections[]` + `ui_discovery{}` are the payl
 
 ```mermaid
 flowchart TD
-    IN["📋 <b>ANY Quick POC test plan</b> (markdown)<br/><i>passed as the invocation prompt</i>"]
+    IN["📋 ANY Quick POC test plan (markdown)<br/><i>passed as the invocation prompt</i>"]
 
-    subgraph HARNESS["🤖 AgentCore Harness — declarative, AWS-managed"]
-        direction TB
-        M["🧠 <b>Model</b><br/>global.anthropic.claude-opus-4-8<br/><i>apiFormat converse_stream · no temperature/top_p</i>"]
-        SK["📚 <b>Skill:</b> quick-poc-testing<br/><i>the methodology — discover, don't assume</i>"]
-        T["🛠️ <b>Tools</b><br/>Browser · real console UI<br/>Code Interpreter · assemble/validate report"]
-        IF["🔌 <b>Inline functions</b><br/>request_human_login · request_human_review · notify_complete"]
-        MEM["💾 <b>Memory</b><br/>semantic · learns UI labels/paths<br/>episodic · past sessions"]
+    subgraph HARNESS["🤖 AgentCore Harness · declarative, AWS-managed"]
+        M["🧠 Model — global.anthropic.claude-opus-4-8<br/><i>converse_stream · no temperature/top_p</i>"]
+        SK["📚 Skill — quick-poc-testing<br/><i>the methodology: discover, don't assume</i>"]
+        T["🛠️ Tools — Browser (real console UI) + Code Interpreter (assemble/validate report)"]
+        IF["🔌 Inline functions — request_human_login · request_human_review · notify_complete"]
+        MEM["💾 Memory — semantic (UI labels/paths) + episodic (past sessions)"]
     end
 
-    subgraph LOOP["🌐 Browser discovery loop — driven by the S3-signal orchestrator (run_test_plan.py)"]
-        direction LR
-        L1["navigate"] --> L2["snapshot<br/><i>read EXACT labels</i>"] --> L3["click / type"] --> L4["wait"] --> L5["📸 screenshot"]
-        L5 -.->|next step| L1
+    subgraph LOOP["🌐 Browser discovery loop · orchestrated by run_test_plan.py (S3-signal)"]
+        L1["navigate"] --> L2["snapshot<br/>read EXACT labels"] --> L3["click / type"] --> L4["wait"] --> L5["📸 screenshot"] --> L6["repeat per step"]
     end
 
-    subgraph OUT["📄 Structured report → /mnt/reports"]
-        direction TB
+    subgraph OUT["📄 Structured report · /mnt/reports"]
         O1["test-report-latest.json<br/>summary.md · screenshots/"]
-        O2["✅ <b>cookbook_corrections[]</b><br/>✅ <b>ui_discovery</b>"]
+        O2["✅ cookbook_corrections + ui_discovery"]
         O1 --> O2
     end
 
-    CB["📓 <b>your POC Cookbook</b>"]
+    CB["📓 your POC Cookbook"]
 
-    IN ==> HARNESS
-    HARNESS ==>|"drive the real console UI"| LOOP
-    LOOP ==>|"capture actual labels, URLs, dialogs, errors, timings<br/><i>(discover — don't trust the recipe)</i>"| OUT
-    OUT ==>|"feed corrections back"| CB
+    IN --> HARNESS
+    HARNESS --> LOOP
+    LOOP --> OUT
+    OUT --> CB
 
-    classDef input fill:#FFF4CE,stroke:#D9A400,stroke-width:1px,color:#333;
-    classDef harness fill:#E8F0FE,stroke:#1A73E8,stroke-width:1px,color:#1A3A6B;
-    classDef loop fill:#E6F4EA,stroke:#137333,stroke-width:1px,color:#0B4A22;
-    classDef out fill:#FCE8E6,stroke:#C5221F,stroke-width:1px,color:#5C0F0C;
-    classDef cook fill:#F3E8FD,stroke:#8430CE,stroke-width:1px,color:#3D1A5B;
-    class IN input; class M,SK,T,IF,MEM harness; class L1,L2,L3,L4,L5 loop; class O1,O2 out; class CB cook;
+    classDef input fill:#FFF4CE,stroke:#D9A400,color:#333333;
+    classDef harness fill:#E8F0FE,stroke:#1A73E8,color:#1A3A6B;
+    classDef loop fill:#E6F4EA,stroke:#137333,color:#0B4A22;
+    classDef out fill:#FCE8E6,stroke:#C5221F,color:#5C0F0C;
+    classDef cook fill:#F3E8FD,stroke:#8430CE,color:#3D1A5B;
+    class IN input
+    class M,SK,T,IF,MEM harness
+    class L1,L2,L3,L4,L5,L6 loop
+    class O1,O2 out
+    class CB cook
 ```
 
 The **orchestrator** (`harness/run_test_plan.py`) is a thin human-in-the-loop driver around `InvokeHarness`. Its
