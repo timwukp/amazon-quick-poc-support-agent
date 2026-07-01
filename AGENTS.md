@@ -3,6 +3,10 @@
 These are hard-won, verified facts about building and running this AWS Bedrock **AgentCore Harness** agent. Re-checking
 them from scratch wastes a lot of time, so trust them unless the AWS API tells you otherwise.
 
+> **Provenance:** this agent was scaffolded with the [`agentcore-harness-builder`](https://github.com/timwukp/agent-skills-best-practice)
+> skill ([v0.2.0](https://github.com/timwukp/agent-skills-best-practice/releases/tag/v0.2.0)). Many of the facts below were
+> discovered while building this agent and fed back into that skill's `references/gotchas.md` and `references/browser-auth.md`.
+
 ## Harness config (`harness/harness.json`)
 - The top-level name field is **`harnessName`**, NOT `name`. Using `name` fails validation.
 - Model: `global.anthropic.claude-opus-4-8` with **`apiFormat: "converse_stream"`**.
