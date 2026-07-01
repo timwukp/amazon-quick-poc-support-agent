@@ -125,7 +125,7 @@ quick-poc-ui-agent-on-agentcore/
 
 ## Build & deploy
 
-This system was scaffolded with the **`agentcore-harness-builder`** skill; its scripts handle preflight, create, memory
+This system was scaffolded with the **[`agentcore-harness-builder`](https://github.com/timwukp/agent-skills-best-practice) skill** ([v0.2.0 release](https://github.com/timwukp/agent-skills-best-practice/releases/tag/v0.2.0)); its scripts handle preflight, create, memory
 wiring, observability, and invocation. Follow **`RUNBOOK.md`** — it marks which steps run autonomously vs. which need
 your AWS account or the one-time human login (Enterprise + IAM Identity Center + MFA).
 
