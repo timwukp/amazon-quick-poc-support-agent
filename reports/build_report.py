@@ -1,4 +1,4 @@
-import json, datetime
+import json, datetime, os, sys
 
 ACCT = "QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531"
 APP_ID = "b76f66c7-deea-4d3d-8ac1-3cab2788d32c"
@@ -9,7 +9,7 @@ report = {
     "test_case_id": "E2E-SALES-DASHBOARD-APP-001",
     "test_version": "2.0",
     "agent_type": "AWS Bedrock Harness AgentCore Browser UI",
-    "executed_at": datetime.datetime.utcnow().isoformat() + "Z",
+    "executed_at": datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None).isoformat() + "Z",
     "region": "us-east-1",
     "account": ACCT,
     "overall_status": "PARTIAL",
@@ -299,7 +299,7 @@ shots = {
  "step_4.3_share_dialog.png":"'Share this app' dialog (Viewer/Co-owner)",
  "step_4.3_share_no_results.png":"Share search 'No results found' for external email; Share disabled",
 }
-ts = datetime.datetime.utcnow().isoformat()+"Z"
+ts = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None).isoformat()+"Z"
 for fn,desc in shots.items():
     sid = "general"
     if fn.startswith("step_"):
@@ -320,10 +320,40 @@ report["performance_metrics"] = {
  "notes": "Durations approximate (manual timing across waits)."
 }
 
-with open("/mnt/reports/test-report-latest.json","w") as f:
-    json.dump(report,f,indent=2)
+OUT = "/mnt/reports/test-report-latest.json"
+with open(OUT, "w") as f:
+    json.dump(report, f, indent=2)
 
-# validate well-formed
-with open("/mnt/reports/test-report-latest.json") as f:
-    json.load(f)
-print("OK steps:",len(report["steps"]),"corrections:",len(report["cookbook_corrections"]),"shots:",len(report["screenshots_manifest"]))
+# Validate against schema/report.schema.json -- not merely "is it JSON".
+# An earlier version only re-parsed the file, so the report and the schema
+# drifted apart in five places without anything failing.
+def validate(path):
+    schema_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                               "..", "schema", "report.schema.json")
+    if not os.path.exists(schema_path):
+        print("WARN: schema not found at", schema_path, "- skipping validation")
+        return True
+    with open(schema_path) as f:
+        schema = json.load(f)
+    with open(path) as f:
+        doc = json.load(f)
+    try:
+        import jsonschema
+    except ImportError:
+        print("WARN: jsonschema not installed - JSON is well-formed but UNVALIDATED")
+        return True
+    errors = sorted(jsonschema.Draft7Validator(schema).iter_errors(doc),
+                    key=lambda e: list(e.path))
+    if errors:
+        print(f"SCHEMA VALIDATION FAILED ({len(errors)} error(s)):")
+        for e in errors[:20]:
+            print(f"  {'/'.join(str(x) for x in e.path) or '<root>'}: {e.message}")
+        return False
+    print("schema validation: PASS")
+    return True
+
+ok = validate(OUT)
+print("OK steps:", len(report["steps"]),
+      "corrections:", len(report["cookbook_corrections"]),
+      "shots:", len(report["screenshots_manifest"]))
+sys.exit(0 if ok else 1)

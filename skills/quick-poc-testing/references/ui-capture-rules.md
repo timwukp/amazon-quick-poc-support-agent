@@ -77,3 +77,64 @@ If the actual UI matches expectations, set `correction_needed: false` (or omit) 
 Each step lists explicit questions (e.g. "What is the exact URL path for the Connectors page?"). Make sure every one of
 those is answered by a concrete value somewhere in `ui_discovery`. Treat them as the acceptance criteria for the step's
 discovery goal.
+
+---
+
+## Absence claims — the highest-risk output this agent produces
+
+A discovery run naturally produces two kinds of statement:
+
+- **"X is at Y, labelled Z"** — a positive finding. Bounded by what you saw; safe.
+- **"X does not exist"** — an absence claim. **Unbounded, and almost always wrong when based on UI observation
+  alone.**
+
+Absence claims are what downstream readers act on ("there is no way to restrict this, so we need a different
+control"). A wrong one propagates into customer-facing designs. Two real failures from actual runs:
+
+1. A run swept seven admin surfaces, found no web-search toggle, and recorded *"no account-level web-search
+   control exists."* **Four such controls existed** — documented, on a surface the sweep never reached.
+2. Having caught that, the same run then explained the miss as *"the feature is disabled in this account."*
+   **Also wrong** — the feature was enabled and usable. The controls simply lived on a *different admin
+   surface* whose location was undocumented.
+
+Both errors share one root cause: **an unverified inference written down as a finding.** The first was "we did
+not see it, so it does not exist." The second was "we did not see it, so the feature must be off." Neither was
+checked before being recorded.
+
+### Rules
+
+1. **Scope every absence claim to what you actually enumerated.** Not *"there is no region setting"* but
+   *"none of the N surfaces enumerated below contains a region setting; here is the list."* State N.
+2. **Never explain a miss with an unverified cause.** If you did not find something, the finding is *"not found
+   on the surfaces reached"* — full stop. "Because the feature is disabled" / "because this account lacks
+   permission" / "because it is not released yet" are **hypotheses**. Either test them (open the feature and
+   see) or label them as untested hypotheses.
+3. **Enumerate structurally, not by guessed text.** Absence by link-text search is not absence — see
+   *Enumerate by `href`* in `quicksight-nav.md`. Attach the enumeration (the full anchor/href list) as evidence.
+4. **Cross-check against the documentation before asserting absence.** If the official docs name a control you
+   could not find, the finding is **"documented to exist; we could not locate its surface"** — not "absent".
+   That phrasing is both true and actionable; "absent" is neither.
+5. **Distinguish "not observed" from "does not exist" in the report.** Use `NOT_FOUND_ON_SURFACES_REACHED`, not
+   `NOT_PRESENT`, unless you enumerated exhaustively and can say what "exhaustively" means.
+6. **When UI text and documentation disagree, record an open question — do not pick a side.** A single UI label
+   is not sufficient evidence of scope, and neither is a single doc page. Report both verbatim and flag it for
+   the service team.
+
+### Report fields
+
+Add these to any step that produces an absence claim:
+
+```json
+{
+  "claim_type": "absence",
+  "surfaces_enumerated": ["/admin/permissions", "/admin/asset-management", "..."],
+  "enumeration_method": "all a[href] on the admin nav, matched by path (not link text)",
+  "enumeration_count": 34,
+  "doc_cross_check": "admin-controls.html names this control but gives no navigation path",
+  "status": "NOT_FOUND_ON_SURFACES_REACHED",
+  "untested_hypotheses": ["control may live on a separate Quick Suite admin surface"]
+}
+```
+
+If you cannot fill `surfaces_enumerated` and `enumeration_method`, **you do not yet have an absence finding** —
+you have an observation. Record it as one.
