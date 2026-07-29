@@ -32,6 +32,29 @@ These mirror the test plan's "Output Requirements (Per Step)". For **every** ste
 
 Save all screenshots under `/mnt/reports/screenshots/` and list them in `screenshots_manifest`.
 
+### Screenshots are run-local — never commit them
+
+Captures of a real console **always** contain identifiers you cannot see while capturing:
+
+- the **AWS account ID**, rendered in the account-alias dropdown in the top application bar of *every* screen;
+- **real email addresses** typed into or listed by share/invite dialogs;
+- **asset UUIDs** and account aliases inside URLs shown in success modals and address bars.
+
+So the rules are:
+
+1. **Do not commit raw captures to a repository.** They stay in `/mnt/reports/screenshots/` on the run host and
+   are shared out-of-band if a human needs them. `.gitignore` excludes them.
+2. **Distil instead.** Write what the capture *shows* — layout, rendering, state, which trap the dialog sets —
+   into a text evidence file (`reports/ui-evidence.md` is the example). Text is greppable, diffable and
+   reviewable; a PNG is none of those.
+3. **Keep `screenshots_manifest` and the `screenshots` step field.** They are the index of what was captured and
+   stay valid whether or not the files travel. A filename in the report is a pointer, not an attachment.
+4. **Never rely on OCR as the redaction check.** If you must publish an image, OCR misses text dimmed by a modal
+   overlay and misreads digits — a real run had OCR report the account ID as `521…` when the pixels read `321…`,
+   and miss the top-bar occurrence entirely while catching the same ID in a URL below it. Mask by **position**
+   (an unconditional band over the account-alias region), then verify **by eye**. Distilling to text avoids this
+   problem rather than fighting it.
+
 ## CAPTURE_TEXT — always record the exact wording of
 
 - All **button labels** in the current action area.

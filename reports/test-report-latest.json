@@ -377,7 +377,7 @@
       "step_name": "Create app & open editor",
       "status": "PASS",
       "duration_ms": 30000,
-      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/<APP_ID>/edit",
       "actual_page_title": "Untitled App | Quick Apps",
       "actual_ui_labels": [
         "Explore",
@@ -407,7 +407,7 @@
       "step_name": "Connector + AI consent",
       "status": "PASS",
       "duration_ms": 60000,
-      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/<APP_ID>/edit",
       "actual_page_title": "Sales Dashboard | Quick Apps",
       "actual_ui_labels": [
         "Confirm use of assets",
@@ -437,7 +437,7 @@
       "step_name": "Connector data table",
       "status": "PASS",
       "duration_ms": 40000,
-      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/<APP_ID>/edit",
       "actual_page_title": "Sales Dashboard | Quick Apps",
       "actual_ui_labels": [
         "SalesTable",
@@ -457,7 +457,7 @@
       "step_name": "Chart visual",
       "status": "PASS",
       "duration_ms": 40000,
-      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/<APP_ID>/edit",
       "actual_page_title": "Sales Dashboard | Quick Apps",
       "actual_ui_labels": [
         "SalesChart",
@@ -478,7 +478,7 @@
       "step_name": "AI summary component",
       "status": "PASS",
       "duration_ms": 40000,
-      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/<APP_ID>/edit",
       "actual_page_title": "Sales Dashboard | Quick Apps",
       "actual_ui_labels": [
         "AISummary",
@@ -498,7 +498,7 @@
       "step_name": "Runtime permission",
       "status": "PASS",
       "duration_ms": 20000,
-      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/<APP_ID>/edit",
       "actual_page_title": "Sales Dashboard | Quick Apps",
       "actual_ui_labels": [
         "Allow one time",
@@ -526,7 +526,7 @@
       "step_name": "Open preview",
       "status": "PARTIAL",
       "duration_ms": 30000,
-      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/<APP_ID>/edit",
       "actual_page_title": "Sales Dashboard | Quick Apps",
       "actual_ui_labels": [
         "Preview",
@@ -550,7 +550,7 @@
       "step_name": "Verify table renders",
       "status": "PARTIAL",
       "duration_ms": 5000,
-      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/<APP_ID>/edit",
       "actual_page_title": "Sales Dashboard | Quick Apps",
       "actual_ui_labels": [],
       "action_taken": "Cannot inspect iframe DOM.",
@@ -567,7 +567,7 @@
       "step_name": "Verify chart renders",
       "status": "PARTIAL",
       "duration_ms": 5000,
-      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/<APP_ID>/edit",
       "actual_page_title": "Sales Dashboard | Quick Apps",
       "actual_ui_labels": [],
       "action_taken": "Cannot inspect iframe DOM.",
@@ -584,7 +584,7 @@
       "step_name": "Verify AI summary works",
       "status": "PARTIAL",
       "duration_ms": 5000,
-      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/<APP_ID>/edit",
       "actual_page_title": "Sales Dashboard | Quick Apps",
       "actual_ui_labels": [],
       "action_taken": "Cannot inspect iframe DOM / click 'Generate AI Summary' inside sandbox.",
@@ -601,7 +601,7 @@
       "step_name": "Publish app",
       "status": "PASS",
       "duration_ms": 30000,
-      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/<APP_ID>/edit",
       "actual_page_title": "Sales Dashboard | Quick Apps",
       "actual_ui_labels": [
         "Publish",
@@ -621,14 +621,14 @@
         "step_4.1_publish_dialog.png",
         "step_4.1_published_success.png"
       ],
-      "notes": "View URL: https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/view/app . Status Private -> Published."
+      "notes": "View URL: https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/<APP_ID>/view/app . Status Private -> Published."
     },
     {
       "step_id": "4.2",
       "step_name": "Verify published app",
       "status": "PARTIAL",
       "duration_ms": 10000,
-      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/view/app",
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/<APP_ID>/view/app",
       "actual_page_title": "Sales Dashboard",
       "actual_ui_labels": [
         "Open"
@@ -647,7 +647,7 @@
       "step_name": "Open Share dialog",
       "status": "PASS",
       "duration_ms": 20000,
-      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/<APP_ID>/edit",
       "actual_page_title": "Share this app",
       "actual_ui_labels": [
         "Share this app",
@@ -675,7 +675,7 @@
       "step_name": "Share with pilot user (Viewer)",
       "status": "FAIL",
       "duration_ms": 20000,
-      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/b76f66c7-deea-4d3d-8ac1-3cab2788d32c/edit",
+      "actual_url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531/apps/<APP_ID>/edit",
       "actual_page_title": "Share this app",
       "actual_ui_labels": [
         "Search for name, alias or email",

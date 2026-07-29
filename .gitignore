@@ -2,6 +2,16 @@
 *.log
 harness/.run_state.json
 
+# --- console screenshots: run-local, NEVER committed ---
+# Captures of a real console always contain the AWS account ID (rendered in the
+# account-alias dropdown of every screen), and often real emails and asset UUIDs.
+# Distil them into text instead — see reports/ui-evidence.md and the
+# "Screenshots are run-local" rules in skills/quick-poc-testing/references/ui-capture-rules.md
+reports/screenshots/
+**/screenshots/*.png
+*.jpg
+*.jpeg
+
 # --- Python ---
 **/__pycache__/
 *.py[cod]

@@ -129,6 +129,12 @@ python3 -c "import json,jsonschema; jsonschema.validate(json.load(open('reports/
 `schema/report.schema.json`. Previously it only re-parsed the JSON to confirm it was well-formed, which let the
 report and the schema drift apart in five places undetected (see `git log` for the alignment commit).
 
+> ⚠️ **Do not commit the screenshots you just pulled down.** Every capture contains the AWS account ID (it renders in
+> the account-alias dropdown in the top bar of *every* screen), and share/invite dialogs capture real email addresses.
+> `.gitignore` excludes `reports/screenshots/`. Keep the captures locally for human review and distil anything worth
+> publishing into text — `reports/ui-evidence.md` is the example. Rules:
+> `skills/quick-poc-testing/references/ui-capture-rules.md`.
+
 Feed `cookbook_corrections` + `ui_discovery` into your POC Cookbook (per the test plan's mapping table).
 
 ---

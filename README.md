@@ -33,7 +33,7 @@ account) executing `test-plan/E2E-Sales-Dashboard-App.md`. The full evidence is 
 | Overall status | **PARTIAL** |
 | Steps | 21 total — **12 PASS** · 6 PARTIAL · **1 FAIL** · 2 SKIP |
 | Cookbook corrections captured | **11** |
-| Screenshots captured | **21** (`reports/screenshots/`) |
+| Screenshots captured | **21** — run-local, not committed; distilled into [`reports/ui-evidence.md`](reports/ui-evidence.md) |
 
 The single FAIL is **sharing a Quick App with an external email address**: the "Share this app" search
 (placeholder *"Search for name, alias or email"*) returns **"No results found"** for a non-directory email and the
@@ -42,6 +42,8 @@ product behavior, captured as a cookbook correction rather than an agent defect.
 
 Read `reports/summary.md` for the human-readable headline findings and `reports/test-report-latest.json` for the
 full structured report (`cookbook_corrections[]` + `ui_discovery{}` are the payload you feed back into your Cookbook).
+`reports/ui-evidence.md` carries what was only visible *visually* in the captures — layout, chart rendering, and the
+consent-dialog trap — since the raw captures themselves are not committed (see *Notes on identifiers*).
 
 ## Architecture
 
@@ -127,9 +129,9 @@ quick-poc-ui-agent-on-agentcore/
 ├── skills/quick-poc-testing/       # the reusable methodology (the "technique")
 │   ├── SKILL.md                    # discovery-first workflow (works for ANY plan)
 │   └── references/
-│       ├── ui-capture-rules.md     # per-step capture fields, screenshots, status rubric
+│       ├── ui-capture-rules.md     # capture fields, absence-claim rules, screenshots-are-run-local policy
 │       ├── report-schema.md        # default report contract (plan's own format takes precedence)
-│       └── quicksight-nav.md       # console URL discovery + browser-primitive playbook
+│       └── quicksight-nav.md       # console URL discovery + AgentCore browser pitfalls
 ├── runtime/
 │   └── cookie_inject_bootstrap.py  # experimental: cookie-injection auth (no interactive Live View)
 ├── test-plan/
@@ -137,11 +139,11 @@ quick-poc-ui-agent-on-agentcore/
 ├── schema/
 │   └── report.schema.json          # default JSON report schema
 └── reports/                        # the VALIDATED run, kept as a real example
-    ├── test-report-latest.json     # full structured report
+    ├── test-report-latest.json     # full structured report (schema-validated)
     ├── summary.md                  # human-readable headline findings
+    ├── ui-evidence.md              # captures distilled to text (raw PNGs are NOT committed)
     ├── run_notes.md                # raw per-step notes
-    ├── build_report.py             # report assembler used by the run
-    └── screenshots/                # 21 captured screenshots
+    └── build_report.py             # report assembler + schema validator (exits non-zero on mismatch)
 ```
 
 ## Build & deploy
@@ -161,4 +163,10 @@ your AWS account or the one-time human login (Enterprise + IAM Identity Center +
 
 All AWS account IDs, console aliases, user emails, and workshop access codes in this repo have been replaced with
 placeholders (`<ACCOUNT_ID>`, `<WORKSHOP_ACCOUNT_ID>`, `pilot-user@example.com`, `<CONSOLE_ALIAS>`, `<ACCESS_CODE>`).
-The screenshots under `reports/screenshots/` are from a temporary workshop account and are kept as-is as run evidence.
+
+**Console screenshots are not committed, by policy.** A capture of a real console always contains the AWS account ID —
+it renders in the account-alias dropdown in the top bar of *every* screen — and often real email addresses in share
+dialogs and asset UUIDs in URLs. Masking them is error-prone (OCR misses text dimmed by a modal overlay and misreads
+digits), so the captures are instead **distilled into text** in `reports/ui-evidence.md`, which is greppable and
+reviewable in a way a PNG is not. `.gitignore` excludes `reports/screenshots/`; raw captures stay on the run host and
+are shared out-of-band. The rules are in `skills/quick-poc-testing/references/ui-capture-rules.md`.
