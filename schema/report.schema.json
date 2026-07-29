@@ -2,38 +2,173 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Quick POC UI Agent — E2E Test Report",
   "type": "object",
-  "required": ["test_execution", "cookbook_corrections", "ui_discovery", "steps", "screenshots_manifest"],
+  "required": [
+    "test_execution",
+    "cookbook_corrections",
+    "ui_discovery",
+    "steps",
+    "screenshots_manifest"
+  ],
   "properties": {
     "test_execution": {
       "type": "object",
-      "required": ["test_case_id", "test_version", "execution_timestamp", "agent_type", "region",
-                   "account_id", "overall_status", "total_steps", "passed_steps", "failed_steps", "skipped_steps"],
+      "required": [
+        "test_case_id",
+        "test_version",
+        "agent_type",
+        "region",
+        "overall_status"
+      ],
       "properties": {
-        "test_case_id": {"type": "string"},
-        "test_version": {"type": "string"},
-        "execution_timestamp": {"type": "string", "description": "ISO 8601"},
-        "agent_type": {"type": "string"},
-        "region": {"type": "string"},
-        "account_id": {"type": "string"},
-        "overall_status": {"enum": ["PASS", "FAIL", "PARTIAL"]},
-        "total_duration_seconds": {"type": "number"},
-        "total_steps": {"type": "integer"},
-        "passed_steps": {"type": "integer"},
-        "failed_steps": {"type": "integer"},
-        "skipped_steps": {"type": "integer"}
-      }
+        "test_case_id": {
+          "type": "string"
+        },
+        "test_version": {
+          "type": "string"
+        },
+        "execution_timestamp": {
+          "type": "string",
+          "description": "ISO 8601"
+        },
+        "agent_type": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "account_id": {
+          "type": "string"
+        },
+        "overall_status": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "PARTIAL"
+          ]
+        },
+        "total_duration_seconds": {
+          "type": "number"
+        },
+        "total_steps": {
+          "type": "integer"
+        },
+        "passed_steps": {
+          "type": "integer"
+        },
+        "failed_steps": {
+          "type": "integer"
+        },
+        "skipped_steps": {
+          "type": "integer"
+        },
+        "executed_at": {
+          "type": "string",
+          "description": "ISO 8601. Alias of execution_timestamp."
+        },
+        "account": {
+          "type": "string",
+          "description": "Account name or id. MUST be redacted. Alias of account_id."
+        },
+        "counts": {
+          "type": "object",
+          "description": "Step tallies. Alias of the flat *_steps fields.",
+          "properties": {
+            "total_steps": {
+              "type": "integer"
+            },
+            "passed": {
+              "type": "integer"
+            },
+            "partial": {
+              "type": "integer"
+            },
+            "failed": {
+              "type": "integer"
+            },
+            "blocked": {
+              "type": "integer"
+            },
+            "skipped": {
+              "type": "integer"
+            },
+            "not_found_on_surfaces_reached": {
+              "type": "integer"
+            }
+          }
+        },
+        "summary": {
+          "type": "string"
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "execution_timestamp"
+          ]
+        },
+        {
+          "required": [
+            "executed_at"
+          ]
+        }
+      ],
+      "allOf": [
+        {
+          "anyOf": [
+            {
+              "required": [
+                "account_id"
+              ]
+            },
+            {
+              "required": [
+                "account"
+              ]
+            }
+          ]
+        },
+        {
+          "anyOf": [
+            {
+              "required": [
+                "counts"
+              ]
+            },
+            {
+              "required": [
+                "total_steps"
+              ]
+            }
+          ]
+        }
+      ]
     },
     "cookbook_corrections": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["step_id", "cookbook_says", "actual_ui", "correction_needed"],
+        "required": [
+          "step_id",
+          "cookbook_says",
+          "actual_ui",
+          "correction_needed"
+        ],
         "properties": {
-          "step_id": {"type": "string"},
-          "cookbook_says": {"type": "string"},
-          "actual_ui": {"type": "string"},
-          "correction_needed": {"type": "boolean"},
-          "suggested_correction": {"type": "string"}
+          "step_id": {
+            "type": "string"
+          },
+          "cookbook_says": {
+            "type": "string"
+          },
+          "actual_ui": {
+            "type": "string"
+          },
+          "correction_needed": {
+            "type": "boolean"
+          },
+          "suggested_correction": {
+            "type": "string"
+          }
         }
       }
     },
@@ -41,31 +176,156 @@
       "type": "object",
       "description": "Complete map of the real Console UI. Fill every known label; use null/\"\" when not observed.",
       "properties": {
-        "connector_page": {"type": "object"},
-        "apps_page": {"type": "object"},
-        "sharing_interface": {"type": "object"},
-        "consent_dialogs": {"type": "object"}
+        "connector_page": {
+          "type": "object"
+        },
+        "apps_page": {
+          "type": "object"
+        },
+        "sharing_interface": {
+          "type": "object"
+        },
+        "consent_dialogs": {
+          "type": "object"
+        }
       }
     },
     "steps": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["step_id", "step_name", "status"],
+        "required": [
+          "step_id",
+          "step_name",
+          "status"
+        ],
         "properties": {
-          "step_id": {"type": "string"},
-          "step_name": {"type": "string"},
-          "status": {"enum": ["PASS", "FAIL", "SKIP", "BLOCKED", "PARTIAL"]},
-          "duration_ms": {"type": "integer"},
-          "actual_url": {"type": "string"},
-          "actual_page_title": {"type": "string"},
-          "actual_ui_labels": {"type": "array", "items": {"type": "string"}},
-          "action_taken": {"type": "string"},
-          "wait_duration_ms": {"type": "integer"},
-          "unexpected_ui": {"type": "array", "items": {"type": "string"}},
-          "error_messages": {"type": "array", "items": {"type": "string"}},
-          "screenshots": {"type": "array", "items": {"type": "string"}},
-          "notes": {"type": "string"}
+          "step_id": {
+            "type": "string"
+          },
+          "step_name": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "PASS",
+              "FAIL",
+              "SKIP",
+              "BLOCKED",
+              "PARTIAL",
+              "NOT_FOUND_ON_SURFACES_REACHED"
+            ]
+          },
+          "duration_ms": {
+            "type": "integer"
+          },
+          "actual_url": {
+            "type": "string"
+          },
+          "actual_page_title": {
+            "type": "string"
+          },
+          "actual_ui_labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "action_taken": {
+            "type": "string"
+          },
+          "wait_duration_ms": {
+            "type": "integer"
+          },
+          "unexpected_ui": {
+            "type": "array",
+            "description": "Popups/modals/banners not in the step. String or {text,...} object.",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "text"
+                  ],
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    },
+                    "buttons": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "error_messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "screenshots": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "notes": {
+            "type": "string"
+          },
+          "absence_claim": {
+            "type": "object",
+            "description": "Required when the step asserts something does NOT exist. Absence claims based on UI observation alone are the highest-risk output this agent produces; see references/ui-capture-rules.md.",
+            "required": [
+              "surfaces_enumerated",
+              "enumeration_method"
+            ],
+            "properties": {
+              "surfaces_enumerated": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Exact list of surfaces/paths actually enumerated. Scopes the claim."
+              },
+              "enumeration_method": {
+                "type": "string",
+                "description": "How enumeration was done, e.g. 'all a[href] on admin nav, matched by path not link text'."
+              },
+              "enumeration_count": {
+                "type": "integer"
+              },
+              "doc_cross_check": {
+                "type": "string",
+                "description": "What the official documentation says. If docs name the control, the finding is 'documented to exist; surface not located' - NOT 'absent'."
+              },
+              "untested_hypotheses": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Candidate explanations NOT verified. Never promote these to findings."
+              }
+            }
+          },
+          "navigation_verified": {
+            "type": "boolean",
+            "description": "True only if page CONTENT changed after navigation (not just the URL). SPA goto often loads the landing page while showing the requested path."
+          },
+          "side_effects": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Server-side objects created even on a nominally read-only run (e.g. an empty draft minted by opening a creation flow), and whether each persisted."
+          }
         }
       }
     },
@@ -73,25 +333,76 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["filename", "step_id"],
+        "required": [
+          "filename",
+          "step_id"
+        ],
         "properties": {
-          "filename": {"type": "string"},
-          "step_id": {"type": "string"},
-          "description": {"type": "string"},
-          "timestamp": {"type": "string"}
+          "filename": {
+            "type": "string"
+          },
+          "step_id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          }
         }
       }
     },
-    "errors_encountered": {"type": "array", "items": {"type": "object"}},
+    "errors_encountered": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
     "performance_metrics": {
       "type": "object",
       "properties": {
-        "phase_1_duration_seconds": {"type": "number"},
-        "phase_2_duration_seconds": {"type": "number"},
-        "phase_3_duration_seconds": {"type": "number"},
-        "phase_4_duration_seconds": {"type": "number"},
-        "slowest_step": {"type": "object"},
-        "ai_generation_times_ms": {"type": "array", "items": {"type": "number"}}
+        "phase_1_duration_seconds": {
+          "type": "number"
+        },
+        "phase_2_duration_seconds": {
+          "type": "number"
+        },
+        "phase_3_duration_seconds": {
+          "type": "number"
+        },
+        "phase_4_duration_seconds": {
+          "type": "number"
+        },
+        "slowest_step": {
+          "type": "object"
+        },
+        "ai_generation_times_ms": {
+          "description": "Array of times, or a labelled map.",
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number"
+              }
+            }
+          ]
+        },
+        "phase_durations_ms": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
       }
     }
   }

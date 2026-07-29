@@ -43,6 +43,16 @@ what is actually on screen.** When the test plan says `LOOK FOR: "Create connect
    and continue to the next step. Downstream steps that depend on it become `BLOCKED`.
 7. **Safety.** Stay within the Quick/QuickSight console domain. Never submit real PII or payment data. Use only the
    placeholder values the test plan provides. Destructive actions (delete) only in the explicit Cleanup phase.
+8. **Verify the navigation, not the URL.** This is a single-page app: a direct `goto` often loads the landing page
+   while the address bar shows the path you asked for. Assert the page *content* changed before recording anything.
+   See `references/quicksight-nav.md` → *AgentCore Browser pitfalls*.
+9. **Never state an absence you did not enumerate, and never explain a miss with an untested cause.** "We did not
+   see it" is not "it does not exist", and "we did not see it" is not "the feature is off". Absence claims are the
+   highest-risk output this agent produces — see `references/ui-capture-rules.md` → *Absence claims*.
+10. **Features that egress data are not read-only.** Anything that sends a query outward (web search, an
+    internet-enabled agent, a UI agent visiting external sites) performs real outbound egress when run. On a
+    read-only or customer-account run, read the surface and **do not start the operation**. Note also that merely
+    opening a creation flow can mint a server-side draft — verify afterwards whether it persisted.
 
 ## Workflow
 

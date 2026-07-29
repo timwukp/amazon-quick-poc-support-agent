@@ -21,7 +21,7 @@ python ~/.kiro/skills/agentcore-harness-builder/scripts/preflight.py --region us
 Confirms **boto3 ≥ 1.43.18** (the InvokeHarness/CreateHarness shapes only exist there), the harness ops, credentials,
 and prints live API shapes. If your system boto3 is older, use a venv:
 ```bash
-python3 -m venv /tmp/agentcore-venv && /tmp/agentcore-venv/bin/pip install -U "boto3>=1.43.18"
+python3 -m venv /tmp/agentcore-venv && /tmp/agentcore-venv/bin/pip install -U "boto3>=1.43.18" jsonschema
 source /tmp/agentcore-venv/bin/activate
 ```
 
@@ -124,6 +124,11 @@ S3 (the orchestrator prompt asks for this) and pull them down:
 aws s3 sync s3://quick-poc-agent-skills-<ACCOUNT_ID>/reports ./reports --region us-east-1
 python3 -c "import json,jsonschema; jsonschema.validate(json.load(open('reports/test-report-latest.json')), json.load(open('schema/report.schema.json')))" && echo "report valid"
 ```
+
+`reports/build_report.py` now runs this validation itself and **exits non-zero** if the report does not match
+`schema/report.schema.json`. Previously it only re-parsed the JSON to confirm it was well-formed, which let the
+report and the schema drift apart in five places undetected (see `git log` for the alignment commit).
+
 Feed `cookbook_corrections` + `ui_discovery` into your POC Cookbook (per the test plan's mapping table).
 
 ---
