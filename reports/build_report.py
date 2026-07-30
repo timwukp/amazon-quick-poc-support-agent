@@ -1,7 +1,7 @@
 import json, datetime, os, sys
 
 ACCT = "QuickSight-Workshop-<WORKSHOP_ACCOUNT_ID>-us-east-1-1781365531"
-APP_ID = "b76f66c7-deea-4d3d-8ac1-3cab2788d32c"
+APP_ID = "<APP_ID>"
 BASE = "https://us-east-1.quicksight.aws.amazon.com/sn/account/" + ACCT
 
 report = {
@@ -320,7 +320,10 @@ report["performance_metrics"] = {
  "notes": "Durations approximate (manual timing across waits)."
 }
 
-OUT = "/mnt/reports/test-report-latest.json"
+# Defaults to the agent's /mnt/reports mount. Override with QUICKPOC_REPORT_OUT to
+# regenerate and validate locally (the /mnt path does not exist off the run host).
+OUT = os.environ.get("QUICKPOC_REPORT_OUT", "/mnt/reports/test-report-latest.json")
+os.makedirs(os.path.dirname(OUT) or ".", exist_ok=True)
 with open(OUT, "w") as f:
     json.dump(report, f, indent=2)
 

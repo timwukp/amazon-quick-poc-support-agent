@@ -16,9 +16,37 @@ keys).
 - `cookbook_corrections` — array; one entry per discrepancy between expected and actual UI (see `ui-capture-rules.md`).
 - `ui_discovery` — the real UI map. Fill the four objects below as completely as observed.
 - `steps` — one entry per executed step with all per-step fields.
-- `screenshots_manifest` — every screenshot with its step_id, description, timestamp.
+- `screenshots_manifest` — every screenshot with its step_id, description, timestamp. This is an **index**, not an
+  attachment list: the captures stay on the run host and are **not committed** (see *Screenshots are run-local* in
+  `ui-capture-rules.md`). Keep the manifest complete regardless.
 - `errors_encountered` — notable errors (objects with step_id + message).
 - `performance_metrics` — per-phase durations, slowest step, AI generation times.
+
+## Per-step fields for absence, navigation and side effects
+
+Three optional per-step fields exist for the highest-risk outputs. Full rationale in `ui-capture-rules.md`.
+
+- **`status`** may take `NOT_FOUND_ON_SURFACES_REACHED` in addition to `PASS`/`FAIL`/`PARTIAL`/`SKIP`/`BLOCKED`.
+  Use it instead of claiming something is absent.
+- **`absence_claim`** — required whenever the step concludes something is missing. The schema **requires**
+  `surfaces_enumerated` and `enumeration_method` inside it, so an unevidenced absence claim **fails validation**:
+
+  ```json
+  "absence_claim": {
+    "surfaces_enumerated": ["/admin/permissions", "/admin/asset-management"],
+    "enumeration_method": "all a[href] on the admin nav, matched by path (not link text)",
+    "enumeration_count": 34,
+    "doc_cross_check": "admin-controls.html names this control but gives no navigation path",
+    "untested_hypotheses": ["control may live on a separate Quick Suite admin surface"]
+  }
+  ```
+
+- **`navigation_verified`** — record that the page *content* changed, not just the URL. This app is a SPA: a
+  `goto` can display the requested URL while rendering the landing page. Eight admin pages once returned
+  byte-identical text and were recorded as eight distinct findings.
+- **`side_effects`** — anything the run created, modified or sent, **including on a nominally read-only run**.
+  Opening an agent/research surface can mint a server-side draft object; running one sends query text to an
+  external endpoint. Record it rather than assuming "I only looked, so nothing happened."
 
 ## `ui_discovery` expected shape
 
@@ -58,3 +86,7 @@ If a field was never observed, use `null` or `""` and add a note rather than gue
 Use the code interpreter to `json.load` your report and validate it against `schema/report.schema.json` (jsonschema).
 Fix any schema errors, then write the file and call `notify_complete` with the report path, overall status, and
 counts. A report that doesn't match the schema is not done.
+
+`reports/build_report.py` performs this validation itself and **exits non-zero** on any mismatch — do not treat a
+successful `json.load` as validation. It previously only re-parsed its own output, which let the report and the schema
+drift apart in five places undetected.

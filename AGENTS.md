@@ -57,4 +57,30 @@ The console is behind Enterprise IAM Identity Center SSO + MFA; the agent never 
 ## Identifiers
 All account IDs, console aliases, emails, and access codes in committed files are placeholders
 (`<ACCOUNT_ID>`, `<WORKSHOP_ACCOUNT_ID>`, `pilot-user@example.com`, `<CONSOLE_ALIAS>`, `<ACCESS_CODE>`). Do not commit
-real values. Screenshots under `reports/screenshots/` are from a temporary workshop account and kept as run evidence.
+real values.
+
+**Never commit console screenshots.** This bit us: 21 captures were committed to a public repo, and two of them
+carried a real AWS account ID and a real personal Gmail address. The account ID renders in the account-alias dropdown
+in the **top bar of every screen**, so *every* capture leaks it — you cannot spot-check your way out of this. Masking
+is unreliable: OCR misses text dimmed by a modal overlay and misreads digits (it reported `521…` where the pixels read
+`321…`, and missed the top-bar occurrence entirely while catching the same ID in a URL below it).
+
+Distil captures into text instead — `reports/ui-evidence.md` is the pattern, and `.gitignore` excludes
+`reports/screenshots/`. Keep `screenshots_manifest` and the per-step `screenshots` field: a filename in the report is
+a useful pointer even when the file stays on the run host. Full rules:
+`skills/quick-poc-testing/references/ui-capture-rules.md`.
+
+## Absence claims (the highest-risk output)
+A discovery agent's most dangerous output is *"X does not exist"* — downstream readers act on it. Two real failures:
+a run swept seven admin surfaces, found no web-search toggle, and wrote *"no account-level web-search control
+exists"* (four existed, on a surface never reached); then explained the miss as *"the feature is disabled in this
+account"* (it was enabled and usable). Same root cause both times: **an unverified inference written down as a
+finding.**
+
+So: scope absence to what you enumerated and state the count; enumerate by `href`, not link text; cross-check the
+docs before asserting absence (*"documented to exist; could not locate its surface"* is both true and actionable);
+and use status `NOT_FOUND_ON_SURFACES_REACHED`. The schema **requires** `surfaces_enumerated` +
+`enumeration_method` on any `absence_claim`, so an unevidenced absence claim fails validation.
+
+Related: **egress features are not read-only.** Merely opening a research/agent surface can mint a server-side
+draft object, and running one sends your query text to an external endpoint. Record it in `side_effects`.
